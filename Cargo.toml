@@ -1,9 +1,12 @@
 [package]
 name = "ideabank"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors=["Rithul Kamesh<hi@rithul.dev>"]
+description="A Simple Idea bank made with rust"
+license="MIT"
+license-file="LICENSE"
+repository="https://github.com/rithulkamesh/ideabank"
 
 [dependencies]
 clap = { version = "3.2.22", features = ["derive"] }
