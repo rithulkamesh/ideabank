@@ -1,9 +1,9 @@
-use crate::dir::get_note_from_title;
+use crate::dir::get_idea_from_title;
 use chrono::Utc;
 use std::{env::var, fs, io::Write, process::Command};
 
-pub fn new_note(title: &str) {
-    let dir = get_note_from_title(title);
+pub fn new_idea(title: &str) {
+    let dir = get_idea_from_title(title);
     let created_date = Utc::now().timestamp();
     let mut file = fs::File::create(dir.clone()).unwrap();
     writeln!(
@@ -22,8 +22,8 @@ pub fn new_note(title: &str) {
         .expect("Something went wrong...");
 }
 
-pub fn update_note(title: &str) {
-    let dir = get_note_from_title(title);
+pub fn update_idea(title: &str) {
+    let dir = get_idea_from_title(title);
     if !dir.exists() {
         panic!("File does not exist");
     }
@@ -35,8 +35,8 @@ pub fn update_note(title: &str) {
         .expect("Something went wrong...");
 }
 
-pub fn delete_note(title: &str) {
-    let dir = get_note_from_title(title);
+pub fn delete_idea(title: &str) {
+    let dir = get_idea_from_title(title);
     if !dir.exists() {
         return;
     }
