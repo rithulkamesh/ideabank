@@ -106,3 +106,44 @@ pub fn list() {
     }
     println!("{}", table)
 }
+
+pub fn search(term: &str) {
+    let dir = get_ideas_dir();
+    let mut table = Table::new();
+    table.set_header(vec!["Sl.", "Title", "Created At"]);
+    let mut number = 1;
+    for file in fs::read_dir(dir).unwrap() {
+        let file = file.unwrap();
+        let mut type_mark: HashMap<String, &str> = HashMap::new();
+        type_mark.insert("created-at".into(), "i64");
+        let content = fs::read_to_string(fs::DirEntry::path(&file)).expect("Unable to read file!");
+
+        let meta = MetaData {
+            content,
+            required: vec!["title".to_string()],
+            type_mark,
+        };
+        let meta = meta.parse().unwrap().0;
+        let timestamp = meta
+            .get("created-at")
+            .unwrap()
+            .clone()
+            .as_string()
+            .unwrap()
+            .parse::<i64>()
+            .unwrap();
+        let naive = NaiveDateTime::from_timestamp(timestamp, 0);
+        let datetime: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+        let date = datetime.format("%d-%m-%Y").to_string();
+        let title = meta.get("title").unwrap().clone().as_string().unwrap();
+        if title.to_lowercase().contains(term) {
+            table.add_row(vec![
+                number.to_string(),
+                meta.get("title").unwrap().clone().as_string().unwrap(),
+                date,
+            ]);
+            number += 1;
+        }
+    }
+    println!("{}", table)
+}

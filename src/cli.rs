@@ -37,6 +37,6 @@ pub enum Commands {
     Search {
         /// Query to look for
         #[clap(short, long)]
-        query: String,
+        term: String,
     },
 }
