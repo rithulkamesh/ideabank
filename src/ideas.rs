@@ -1,13 +1,15 @@
-use crate::dir::get_idea_from_title;
-use chrono::Utc;
+use crate::dir::{get_idea_from_title, get_ideas_dir};
+use chrono::{DateTime, NaiveDateTime, Utc};
+use comfy_table::Table;
+use markdown_meta_parser::MetaData;
 use std::{
+    collections::HashMap,
     env::var,
     fs,
     io::{stdin, Write},
     path::PathBuf,
     process::Command,
 };
-
 pub fn new_idea(title: &str) {
     let dir = get_idea_from_title(title);
     let created_date = Utc::now().timestamp();
@@ -64,4 +66,43 @@ pub fn delete_idea(title: &str) {
     }
 
     fs::remove_file(dir).unwrap();
+}
+
+pub fn list() {
+    let dir = get_ideas_dir();
+    let mut table = Table::new();
+    table.set_header(vec!["Sl.", "Title", "Created At"]);
+    let mut number = 1;
+
+    for file in fs::read_dir(dir).unwrap() {
+        let file = file.unwrap();
+        let mut type_mark: HashMap<String, &str> = HashMap::new();
+        type_mark.insert("created-at".into(), "i64");
+        let content = fs::read_to_string(fs::DirEntry::path(&file)).expect("Unable to read file!");
+
+        let meta = MetaData {
+            content,
+            required: vec!["title".to_string()],
+            type_mark,
+        };
+        let meta = meta.parse().unwrap().0;
+        let timestamp = meta
+            .get("created-at")
+            .unwrap()
+            .clone()
+            .as_string()
+            .unwrap()
+            .parse::<i64>()
+            .unwrap();
+        let naive = NaiveDateTime::from_timestamp(timestamp, 0);
+        let datetime: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+        let date = datetime.format("%d-%m-%Y").to_string();
+        table.add_row(vec![
+            number.to_string(),
+            meta.get("title").unwrap().clone().as_string().unwrap(),
+            date,
+        ]);
+        number += 1;
+    }
+    println!("{}", table)
 }

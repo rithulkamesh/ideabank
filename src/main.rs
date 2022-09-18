@@ -16,6 +16,7 @@ fn main() {
         Some(New { title }) => new_idea(title),
         Some(Update { title }) => update_idea(title),
         Some(Delete { title }) => delete_idea(title),
+        Some(List {}) => list(),
         _ => {}
     };
 }
