@@ -49,7 +49,8 @@ fn create_idea(dir: PathBuf, title: &str, created_date: i64) {
 pub fn update_idea(title: &str) {
     let dir = get_idea_from_title(title);
     if !dir.exists() {
-        panic!("File does not exist");
+        println!("File does not exist");
+        return;
     }
 
     Command::new(var("EDITOR").unwrap_or(String::from("vim")))
