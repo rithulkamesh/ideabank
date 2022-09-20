@@ -70,11 +70,11 @@ pub fn delete_idea(title: &str) {
 }
 
 pub fn list() {
-    get_ideas(|_title| true)
+    get_ideas(|_title| true);
 }
 
 pub fn search(term: &str) {
-    get_ideas(|title| title.to_lowercase().contains(term))
+    get_ideas(|title| title.to_lowercase().contains(term.to_lowercase()));
 }
 
 fn get_ideas<F: Fn(&str) -> bool>(filter: F) {
