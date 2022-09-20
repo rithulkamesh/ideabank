@@ -11,7 +11,7 @@ repository="https://github.com/rithulkamesh/ideabank"
 [dependencies]
 clap = { version = "3.2.22", features = ["derive"] }
 markdown-meta-parser="0.1.3"
-colored = "2"
 chrono = "0.4"
 convert_case={ version = "0.6.0", features = ["random"] }
 comfy-table="6.1.0"
+home = "0.5.3"
