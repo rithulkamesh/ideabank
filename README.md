@@ -7,3 +7,8 @@ To Install, simply clone the repo and run `cargo install --path .` to get a path
 Run `ideabank help` for more help on the tool
 
 **Please note:** Windows users have to tweak some settings to get the editor working, but Unix users who have vim installed should have no problems
+
+## Credits
+
+- [`Togglebit`](https://github.com/togglebyte) - For the Idea
+- [`Lucas Fernog`](https://github.com/lucasfernog) - For helping me add a filter to avoid repetition in code
