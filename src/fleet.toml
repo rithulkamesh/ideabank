@@ -1,0 +1,5 @@
+rd_enabled = true
+fleet_id = "23d58a47-21d2-4dff-899b-be0e9d133edd"
+
+[build]
+sccache = "/Users/rithulk/.cargo/bin/sccache"
