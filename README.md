@@ -11,4 +11,4 @@ Run `ideabank help` for more help on the tool
 ## Credits
 
 - [`Togglebit`](https://github.com/togglebyte) - For the Idea
-- [`Lucas Fernog`](https://github.com/lucasfernog) - For helping me add a filter to avoid repetition in code
+- [`Lucas`](https://github.com/lucasfernog) - For helping me add a filter to avoid repetition in code
