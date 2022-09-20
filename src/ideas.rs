@@ -74,7 +74,7 @@ pub fn list() {
 }
 
 pub fn search(term: &str) {
-    get_ideas(|title| title.to_lowercase().contains(term.to_lowercase()));
+    get_ideas(|title| title.to_lowercase().contains(&term.to_lowercase()));
 }
 
 fn get_ideas<F: Fn(&str) -> bool>(filter: F) {
