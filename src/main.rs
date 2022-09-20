@@ -25,6 +25,6 @@ fn main() {
 }
 
 fn init() -> Result<(), std::io::Error> {
-    fs::create_dir_all(get_home_dir().join(".ideas")).unwrap();
+    fs::create_dir_all(get_home_dir().join(".ideas")).expect("Unable to create ideas directory");
     Ok(())
 }

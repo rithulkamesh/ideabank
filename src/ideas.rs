@@ -16,20 +16,20 @@ pub fn new_idea(title: &str) {
     if dir.exists() {
         println!("There already exists a idea with this name. Proceed? (y/n)");
         let mut buf = String::from("");
-        stdin().read_line(&mut buf).unwrap();
+        stdin()
+            .read_line(&mut buf)
+            .expect("Unable to read from STDIN");
         return match &buf[..] {
-            "y\n" => {
-                create_idea(dir.clone(), title, created_date);
-            }
+            "y\n" => create_idea(dir, title, created_date),
             _ => return println!("\nAborting..."),
         };
     } else {
-        create_idea(dir.clone(), title, created_date);
+        create_idea(dir, title, created_date);
     }
 }
 
 fn create_idea(dir: PathBuf, title: &str, created_date: i64) {
-    let mut file = fs::File::create(dir.clone()).unwrap();
+    let mut file = fs::File::create(&dir).expect("Permission denied to create file");
     writeln!(
         &mut file,
         "{}",
@@ -38,14 +38,17 @@ fn create_idea(dir: PathBuf, title: &str, created_date: i64) {
             title, created_date
         )
     )
-    .unwrap();
+    .expect("Permission Denied");
+    open_editor(dir);
+}
+
+fn open_editor(dir: PathBuf) {
     Command::new(var("EDITOR").unwrap_or(String::from("vim")))
         .arg(&dir)
         .arg("+call cursor(7, 0)")
         .status()
-        .expect("Something went wrong...");
+        .expect("Failed to open editor");
 }
-
 pub fn update_idea(title: &str) {
     let dir = get_idea_from_title(title);
     if !dir.exists() {
@@ -53,11 +56,7 @@ pub fn update_idea(title: &str) {
         return;
     }
 
-    Command::new(var("EDITOR").unwrap_or(String::from("vim")))
-        .arg(&dir)
-        .arg("+call cursor(7, 0)")
-        .status()
-        .expect("Something went wrong...");
+    open_editor(dir);
 }
 
 pub fn delete_idea(title: &str) {
@@ -65,8 +64,7 @@ pub fn delete_idea(title: &str) {
     if !dir.exists() {
         return;
     }
-
-    fs::remove_file(dir).unwrap();
+    fs::remove_file(dir).expect("Failed to remove file");
 }
 
 pub fn list() {
@@ -83,8 +81,8 @@ fn get_ideas<F: Fn(&str) -> bool>(filter: F) {
     table.set_header(vec!["Sl.", "Title", "Created At"]);
     let mut number = 1;
 
-    for file in fs::read_dir(dir).unwrap() {
-        let file = file.unwrap();
+    for file in fs::read_dir(dir).expect("Unable to read ideas directory.") {
+        let file = file.expect("Failed to read file");
         let mut type_mark: HashMap<String, &str> = HashMap::new();
         type_mark.insert("created-at".into(), "i64");
         let content = fs::read_to_string(fs::DirEntry::path(&file)).expect("Unable to read file!");
@@ -94,19 +92,24 @@ fn get_ideas<F: Fn(&str) -> bool>(filter: F) {
             required: vec!["title".to_string()],
             type_mark,
         };
-        let meta = meta.parse().unwrap().0;
+        let meta = meta.parse().expect("Failed to get meta").0;
         let timestamp = meta
             .get("created-at")
-            .unwrap()
+            .expect("Failed to get meta")
             .clone()
             .as_string()
-            .unwrap()
+            .expect("Failed to get meta")
             .parse::<i64>()
-            .unwrap();
+            .expect("Failed to get meta");
         let naive = NaiveDateTime::from_timestamp(timestamp, 0);
         let datetime: DateTime<Utc> = DateTime::from_utc(naive, Utc);
         let date = datetime.format("%d-%m-%Y").to_string();
-        let title = meta.get("title").unwrap().clone().as_string().unwrap();
+        let title = meta
+            .get("title")
+            .expect("Failed to get meta")
+            .clone()
+            .as_string()
+            .expect("Failed to get meta");
         if filter(&title) {
             table.add_row(vec![number.to_string(), title, date]);
             number += 1;
